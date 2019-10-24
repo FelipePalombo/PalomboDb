@@ -43,6 +43,8 @@ namespace Api
 
             IoCGeral.ConfigurarServico(services);
 
+            IoCGeral.ConfigurarRepositorio(services);
+
             MapearRegistros();
         }
 
