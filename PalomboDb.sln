@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repositorio", "Repositorio\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dominio", "Dominio\Dominio.csproj", "{061063D5-339B-4D16-91F1-03044C194FA7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IoC", "IoC\IoC.csproj", "{3B252128-012B-440F-B750-F61800A5F28C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,17 @@ Global
 		{061063D5-339B-4D16-91F1-03044C194FA7}.Release|x64.Build.0 = Release|Any CPU
 		{061063D5-339B-4D16-91F1-03044C194FA7}.Release|x86.ActiveCfg = Release|Any CPU
 		{061063D5-339B-4D16-91F1-03044C194FA7}.Release|x86.Build.0 = Release|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Debug|x64.Build.0 = Debug|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Debug|x86.Build.0 = Debug|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Release|x64.ActiveCfg = Release|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Release|x64.Build.0 = Release|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Release|x86.ActiveCfg = Release|Any CPU
+		{3B252128-012B-440F-B750-F61800A5F28C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

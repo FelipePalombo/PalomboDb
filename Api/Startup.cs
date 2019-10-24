@@ -10,14 +10,28 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using IoC;
+using AutoMapper;
+using Dominio;
+using AplicacaoBase;
 
 namespace Api
 {
     public class Startup
-    {
+    {        
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+        }       
+
+        private void MapearRegistros()
+        {
+            var config = new MapperConfiguration(cfg => {
+                cfg.CreateMap<AlunoDto, AlunoDominio>();
+                cfg.CreateMap<FiltroDto, FiltroDominio>();
+            });
+
+            var mapper = config.CreateMapper();
         }
 
         public IConfiguration Configuration { get; }
@@ -26,6 +40,10 @@ namespace Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            IoCGeral.ConfigurarServico(services);
+
+            MapearRegistros();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
