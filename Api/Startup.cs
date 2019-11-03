@@ -25,14 +25,17 @@ namespace Api
             Configuration = configuration;
         }       
 
-        private void MapearRegistros()
+        private MapperConfiguration RegistrosMapeados()
         {
             var config = new MapperConfiguration(cfg => {
-                cfg.CreateMap<AlunoDto, AlunoDominio>();
-                cfg.CreateMap<FiltroDto, FiltroDominio>();
+                cfg.CreateMap<AlunoDto, AlunoDominio>().ReverseMap();
+                cfg.CreateMap<FiltroDto, FiltroDominio>().ReverseMap();
             });
 
-            var mapper = config.CreateMapper();
+            config.CompileMappings();
+            config.AssertConfigurationIsValid();
+
+            return config;             
         }
 
         public IConfiguration Configuration { get; }
@@ -46,7 +49,8 @@ namespace Api
 
             IoCGeral.ConfigurarRepositorio(services);
 
-            MapearRegistros();
+            var mapeamento = RegistrosMapeados();
+            services.AddScoped<IMapper>(x => new Mapper(mapeamento));
 
             services.AddSwaggerGen(c =>
             {
