@@ -14,17 +14,19 @@ namespace Servico.Implementacao
             _operacoesRepositorio = operacoesRepositorio;
         }
 
-        public AlunoDominio Listar(IEnumerable<FiltroDominio> filtros)
+        public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros)
         {
-            return new AlunoDominio();
+            return new List<AlunoDominio>();
         }
 
-        public void Inserir(AlunoDominio aluno)
+        public void Inserir(IEnumerable<AlunoDominio> alunos)
         {
-
+            foreach(AlunoDominio aluno in alunos){
+                _operacoesRepositorio.Inserir(aluno);
+            }            
         }
 
-        public void Update(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros)
+        public void Update(IEnumerable<AlunoDominio> alunos, IEnumerable<FiltroDominio> filtros)
         {
 
         }

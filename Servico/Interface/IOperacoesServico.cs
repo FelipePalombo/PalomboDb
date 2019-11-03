@@ -6,11 +6,11 @@ namespace Servico.Interface
 {
     public interface IOperacoesServico
     {
-        AlunoDominio Listar(IEnumerable<FiltroDominio> filtros);
+        IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros);
 
-        void Inserir(AlunoDominio aluno);
+        void Inserir(IEnumerable<AlunoDominio> alunos);
 
-        void Update(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros);
+        void Update(IEnumerable<AlunoDominio> alunos, IEnumerable<FiltroDominio> filtros);
 
         void Delete(IEnumerable<FiltroDominio> filtros);
     }
