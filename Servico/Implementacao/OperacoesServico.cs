@@ -16,7 +16,7 @@ namespace Servico.Implementacao
 
         public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros)
         {
-            return new List<AlunoDominio>();
+            return _operacoesRepositorio.Listar(filtros);
         }
 
         public void Inserir(IEnumerable<AlunoDominio> alunos)

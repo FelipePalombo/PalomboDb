@@ -6,7 +6,7 @@ namespace Repositorio.Interface
 {
     public interface IOperacoesRepositorio
     {
-        AlunoDominio Listar(IEnumerable<FiltroDominio> filtros);
+        IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros);
 
         void Inserir(AlunoDominio aluno);
 

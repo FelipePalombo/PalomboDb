@@ -7,15 +7,32 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Linq;
 
 namespace Repositorio.Implementacao
 {
     public class OperacoesRepositorio : IOperacoesRepositorio
     {
         private string path = @"..\Repositorio\Banco\alunos.json";
-        public AlunoDominio Listar(IEnumerable<FiltroDominio> filtros)
+        public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros)
         {
-            return new AlunoDominio();
+            string json = File.ReadAllText(path);
+            List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json); 
+
+            if (filtros.Count() > 0)
+            {
+                List<AlunoDominio> alunosFiltrados = null;
+                foreach(FiltroDominio filtro in filtros)
+                {
+                    alunosFiltrados = alunos.Where(x => x.GetPropertyValue(filtro.Propriedade).Equals(filtro.Valor)).ToList();
+                }
+
+                return alunosFiltrados;
+            }
+            else
+            {
+                return alunos;
+            }
         }
 
         public void Inserir(AlunoDominio alunoNovo) 
@@ -31,7 +48,7 @@ namespace Repositorio.Implementacao
                     writer.Formatting = Formatting.Indented;
 
                     writer.WriteStartArray();                    
-                    escreverNovoAluno(writer, alunoNovo);
+                    EscreverNovoAluno(writer, alunoNovo);
                     writer.WriteEndArray();   
                 }                    
             }
@@ -48,7 +65,7 @@ namespace Repositorio.Implementacao
                     writer.WriteStartArray();
                     foreach(AlunoDominio aluno in alunos)
                     {
-                        escreverNovoAluno(writer, alunoNovo);
+                        EscreverNovoAluno(writer, aluno);
                     }                                            
                     writer.WriteEndArray();   
                 }
@@ -65,7 +82,7 @@ namespace Repositorio.Implementacao
 
         }
 
-        private void escreverNovoAluno(JsonTextWriter writer, AlunoDominio aluno)
+        private void EscreverNovoAluno(JsonTextWriter writer, AlunoDominio aluno)
         {
             writer.WriteStartObject();
             writer.WritePropertyName("codigo");
@@ -74,7 +91,6 @@ namespace Repositorio.Implementacao
             writer.WriteValue(aluno.Nome);                
             writer.WritePropertyName("nota");
             writer.WriteValue(aluno.Nota);
-            // writer.WriteEnd();
             writer.WriteEndObject();
         }
     }
