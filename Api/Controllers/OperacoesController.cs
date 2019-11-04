@@ -24,14 +24,20 @@ namespace Api.Controllers
             _mapper = mapper;
         }
 
-        // GET operacoes
-        [HttpGet]
-        public IEnumerable<AlunoDto> Get()
+        // GET operacoes/listar
+        [HttpPost]
+        public dynamic Listar([FromBody] IEnumerable<FiltroDto> filtros)
         {
-            var aluno = new AlunoDto{ Codigo = 01, Nome = "Felipe", Nota = 10 };
-            var listaAlunos = new List<AlunoDto>();
-            listaAlunos.Add(aluno);
-            return listaAlunos;
+            try
+            {
+                var pFiltros = _mapper.Map<IEnumerable<FiltroDominio>>(filtros);
+                var retorno = _mapper.Map<IEnumerable<AlunoDto>>(_servico.Listar(pFiltros));
+                return new {Resultado = "Sucesso", Corpo = retorno};
+            }
+            catch(Exception e)
+            {
+                return new {Resultado = "Erro", Erro = e.Message};
+            }            
         }
 
         // GET operacoes/inseriralunos
@@ -42,11 +48,12 @@ namespace Api.Controllers
             {
                 var pAlunos = _mapper.Map<IEnumerable<AlunoDominio>>(alunos);
                 _servico.Inserir(pAlunos);
-                return alunos;
+                
+                return new {Resultado = "Sucesso"};
             }
             catch(Exception e)
             {
-                return e;
+                return new {Resultado = "Erro", Erro = e.Message};
             }
             
         }
