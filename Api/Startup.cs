@@ -30,6 +30,7 @@ namespace Api
             var config = new MapperConfiguration(cfg => {
                 cfg.CreateMap<AlunoDto, AlunoDominio>().ReverseMap();
                 cfg.CreateMap<FiltroDto, FiltroDominio>().ReverseMap();
+                cfg.CreateMap<RegistroDto, RegistroDominio>().ReverseMap();
             });
 
             config.CompileMappings();
