@@ -83,16 +83,21 @@ namespace Repositorio.Implementacao
 
         public void Deletar(IEnumerable<FiltroDominio> filtros)
         {
-            var alunos = Listar(new List<FiltroDominio>());
             List<AlunoDominio> alunosFiltrados = new List<AlunoDominio>();
-            foreach(AlunoDominio aluno in alunos)
+
+            if(filtros.Count() > 0)
             {
-                bool deletar = IsFiltroCompativel(aluno, filtros);
-                if (!deletar)
+                var alunos = Listar(new List<FiltroDominio>());
+            
+                foreach(AlunoDominio aluno in alunos)
                 {
-                    alunosFiltrados.Add(aluno);
-                }                
-            }
+                    bool deletar = IsFiltroCompativel(aluno, filtros);
+                    if (!deletar)
+                    {
+                        alunosFiltrados.Add(aluno);
+                    }                
+                }
+            }            
 
             EscreverNovosAlunos(alunosFiltrados);
         }
