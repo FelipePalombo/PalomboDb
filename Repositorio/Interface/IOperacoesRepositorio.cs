@@ -8,10 +8,12 @@ namespace Repositorio.Interface
     {
         IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros);
 
-        void Inserir(AlunoDominio aluno);
+        IEnumerable<RegistroDominio> ListarRegistros();
 
-        void Update(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros);
+        void Inserir(IEnumerable<AlunoDominio> alunosNovos);
 
-        void Delete(IEnumerable<FiltroDominio> filtros);
+        void Atualizar(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros);
+
+        void Deletar(IEnumerable<FiltroDominio> filtros);
     }
 }

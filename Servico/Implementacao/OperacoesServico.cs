@@ -18,22 +18,22 @@ namespace Servico.Implementacao
         {
             return _operacoesRepositorio.Listar(filtros);
         }
+        
+        public IEnumerable<RegistroDominio> ListarRegistros() => _operacoesRepositorio.ListarRegistros();
 
         public void Inserir(IEnumerable<AlunoDominio> alunos)
         {
-            foreach(AlunoDominio aluno in alunos){
-                _operacoesRepositorio.Inserir(aluno);
-            }            
+            _operacoesRepositorio.Inserir(alunos);
         }
 
-        public void Update(IEnumerable<AlunoDominio> alunos, IEnumerable<FiltroDominio> filtros)
+        public void Atualizar(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros)
         {
-
+            _operacoesRepositorio.Atualizar(aluno, filtros);
         }
 
-        public void Delete(IEnumerable<FiltroDominio> filtros)
+        public void Deletar(IEnumerable<FiltroDominio> filtros)
         {
-
+            _operacoesRepositorio.Deletar(filtros);
         }
     }
 }

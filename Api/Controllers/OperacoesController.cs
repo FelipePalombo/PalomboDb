@@ -24,14 +24,14 @@ namespace Api.Controllers
             _mapper = mapper;
         }
 
-        // GET operacoes/listar
+        // POST operacoes/listar
         [HttpPost]
         public dynamic Listar([FromBody] IEnumerable<FiltroDto> filtros)
         {
             try
             {
                 var pFiltros = _mapper.Map<IEnumerable<FiltroDominio>>(filtros);
-                var retorno = _mapper.Map<IEnumerable<AlunoDto>>(_servico.Listar(pFiltros));
+                var retorno = _mapper.Map<IEnumerable<AlunoFiltroDto>>(_servico.Listar(pFiltros));
                 return new {Resultado = "Sucesso", Corpo = retorno};
             }
             catch(Exception e)
@@ -40,9 +40,26 @@ namespace Api.Controllers
             }            
         }
 
-        // GET operacoes/inseriralunos
+        [HttpGet]
+        /// <summary>
+        /// Teste
+        /// </summary>
+        public dynamic ListarRegistros()
+        {
+            try
+            {
+                var retorno = _mapper.Map<IEnumerable<RegistroDto>>(_servico.ListarRegistros());
+                return new {Resultado = "Sucesso", Corpo = retorno};
+            }
+            catch(Exception e)
+            {
+                return new {Resultado = "Erro", Erro = e.Message};
+            }            
+        }
+
+        // POST operacoes/inseriralunos
         [HttpPost]        
-        public dynamic InserirAlunos([FromBody] IEnumerable<AlunoDto> alunos)
+        public dynamic InserirAlunos([FromBody] IEnumerable<AlunoFiltroDto> alunos)
         {
             try
             {
@@ -56,6 +73,42 @@ namespace Api.Controllers
                 return new {Resultado = "Erro", Erro = e.Message};
             }
             
+        }
+
+        // POST operacoes/atualizar
+        [HttpPost]        
+        public dynamic Atualizar(AlunoFiltroDto alunoFiltro)
+        {
+            AlunoDto aluno = alunoFiltro.aluno;
+            IEnumerable<FiltroDto> filtros = alunoFiltro.filtros;
+            try
+            {
+                var pAluno = _mapper.Map<AlunoDominio>(aluno);
+                var pFiltros = _mapper.Map<IEnumerable<FiltroDominio>>(filtros);
+                _servico.Atualizar(pAluno, pFiltros);
+                
+                return new {Resultado = "Sucesso"};
+            }
+            catch(Exception e)
+            {
+                return new {Resultado = "Erro", Erro = e.Message};
+            }            
+        }
+
+        // POST operacoes/listar
+        [HttpPost]
+        public dynamic Deletar([FromBody] IEnumerable<FiltroDto> filtros)
+        {
+            try
+            {
+                var pFiltros = _mapper.Map<IEnumerable<FiltroDominio>>(filtros);
+                _servico.Deletar(pFiltros);
+                return new {Resultado = "Sucesso"};
+            }
+            catch(Exception e)
+            {
+                return new {Resultado = "Erro", Erro = e.Message};
+            }            
         }
     }
 }

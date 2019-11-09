@@ -35,54 +35,69 @@ namespace Repositorio.Implementacao
             }
         }
 
-        public void Inserir(AlunoDominio alunoNovo) 
+        public IEnumerable<RegistroDominio> ListarRegistros()
+        {
+            var alunos = Listar(new List<FiltroDominio>());
+            List<RegistroDominio> registros = new List<RegistroDominio>(); 
+            foreach(AlunoDominio aluno in alunos)
+            {
+                registros.Add(new RegistroDominio { Codigo = aluno.Codigo, Bloqueado = 'N'});
+            }
+            return registros;
+        }
+
+        public void Inserir(IEnumerable<AlunoDominio> alunosNovos) 
         {
             string json = File.ReadAllText(path);
             var primeiroCadastro = String.IsNullOrEmpty(json);   
 
             if(primeiroCadastro)
             {
-                using (StreamWriter file = File.CreateText(path))
-                using (JsonTextWriter writer = new JsonTextWriter(file))
-                {
-                    writer.Formatting = Formatting.Indented;
-
-                    writer.WriteStartArray();                    
-                    EscreverNovoAluno(writer, alunoNovo);
-                    writer.WriteEndArray();   
-                }                    
+                EscreverNovosAlunos(alunosNovos);                    
             }
             else
             {                    
-                List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json);                
-                alunos.Add(alunoNovo);
+                List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json);        
+                alunos.Concat(alunosNovos);
 
-                using (StreamWriter file = File.CreateText(path))
-                using (JsonTextWriter writer = new JsonTextWriter(file))
-                {
-                    writer.Formatting = Formatting.Indented;
-
-                    writer.WriteStartArray();
-                    foreach(AlunoDominio aluno in alunos)
-                    {
-                        EscreverNovoAluno(writer, aluno);
-                    }                                            
-                    writer.WriteEndArray();   
-                }
+                EscreverNovosAlunos(alunos);
             }
         }
 
-        public void Update(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros)
+        public void Atualizar(AlunoDominio alunoAtualizacao, IEnumerable<FiltroDominio> filtros)
         {
+            var alunos = Listar(new List<FiltroDominio>());
+            List<AlunoDominio> alunosFiltrados = new List<AlunoDominio>();
+            foreach(AlunoDominio aluno in alunos)
+            {
+                bool atualizar = IsFiltroCompativel(aluno, filtros);
+                if (atualizar)
+                {
+                    aluno.AtualizarCampoNecessario(alunoAtualizacao);
+                }
+                alunosFiltrados.Add(aluno);
+            }
 
+            EscreverNovosAlunos(alunosFiltrados);
         }
 
-        public void Delete(IEnumerable<FiltroDominio> filtros)
+        public void Deletar(IEnumerable<FiltroDominio> filtros)
         {
+            var alunos = Listar(new List<FiltroDominio>());
+            List<AlunoDominio> alunosFiltrados = new List<AlunoDominio>();
+            foreach(AlunoDominio aluno in alunos)
+            {
+                bool deletar = IsFiltroCompativel(aluno, filtros);
+                if (!deletar)
+                {
+                    alunosFiltrados.Add(aluno);
+                }                
+            }
 
+            EscreverNovosAlunos(alunosFiltrados);
         }
 
-        private void EscreverNovoAluno(JsonTextWriter writer, AlunoDominio aluno)
+        private void PrepararNovoAluno(JsonTextWriter writer, AlunoDominio aluno)
         {
             writer.WriteStartObject();
             writer.WritePropertyName("codigo");
@@ -92,6 +107,34 @@ namespace Repositorio.Implementacao
             writer.WritePropertyName("nota");
             writer.WriteValue(aluno.Nota);
             writer.WriteEndObject();
+        }
+
+        private void EscreverNovosAlunos(IEnumerable<AlunoDominio> alunos)
+        {
+            using (StreamWriter file = File.CreateText(path))
+            using (JsonTextWriter writer = new JsonTextWriter(file))
+            {
+                writer.Formatting = Formatting.Indented;
+
+                writer.WriteStartArray();
+                foreach(AlunoDominio aluno in alunos)
+                {
+                    PrepararNovoAluno(writer, aluno);
+                }                                            
+                writer.WriteEndArray();   
+            }
+        }
+
+        private bool IsFiltroCompativel(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros)
+        {
+            bool compativel = true;
+            foreach(FiltroDominio filtro in filtros)
+            {
+                compativel = aluno.GetPropertyValue(filtro.Propriedade).Equals(filtro.Valor);
+                if (compativel == false) 
+                    return false;
+            }
+            return compativel;
         }
     }
 }

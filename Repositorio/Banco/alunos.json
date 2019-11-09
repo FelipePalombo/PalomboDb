@@ -1,0 +1,17 @@
+[
+  {
+    "codigo": 2,
+    "nome": "Joana",
+    "nota": 10.0
+  },
+  {
+    "codigo": 3,
+    "nome": "João",
+    "nota": 5.0
+  },
+  {
+    "codigo": 4,
+    "nome": "Kacaralho",
+    "nota": 2.0
+  }
+]
