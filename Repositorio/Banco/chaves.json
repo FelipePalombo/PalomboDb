@@ -1,0 +1,17 @@
+[
+  {
+    "tipo": 1,
+    "proximaChave": 1,
+    "chaveAtual": 0
+  },
+  {
+    "tipo": 2,
+    "proximaChave": 1,
+    "chaveAtual": 0
+  },
+  {
+    "tipo": 3,
+    "proximaChave": 1,
+    "chaveAtual": 0
+  }
+]
