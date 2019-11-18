@@ -11,23 +11,14 @@ using System.Linq;
 
 namespace Repositorio.Implementacao
 {
-    public class OperacoesRepositorio : IOperacoesRepositorio
+    public class AlunoRepositorio : IOperacoesRepositorio
     {
-        private JsonSerializerSettings serializerSettings;
         private string path = @"..\Repositorio\Banco\alunos.json";
-        public OperacoesRepositorio()
-        {
-            serializerSettings = new JsonSerializerSettings 
-            { 
-                Formatting = Formatting.Indented,
-                TypeNameHandling = TypeNameHandling.Auto 
-            };
-        }
         public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros)
         {
             string json = File.ReadAllText(path);
             List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json); 
-            
+
             if (filtros.Count() > 0)
             {
                 List<AlunoDominio> alunosFiltrados = null;
