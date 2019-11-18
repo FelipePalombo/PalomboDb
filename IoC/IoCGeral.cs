@@ -9,12 +9,17 @@ namespace IoC
 {
     public class IoCGeral
     {
-        public static void ConfigurarRepositorio(IServiceCollection services){
-            services.AddScoped<IOperacoesServico,OperacoesServico>();
+        public static void ConfigurarRepositorio(IServiceCollection services)
+        {
+            services.AddScoped<IOperacoesRepositorio, OperacoesRepositorio>();
+            services.AddScoped<IChaveRepositorio, ChaveRepositorio>();
+            services.AddScoped<ITransacaoRepositorio, TransacaoRepositorio>();
         }
 
-        public static void ConfigurarServico(IServiceCollection services){
-            services.AddScoped<IOperacoesRepositorio, OperacoesRepositorio>();
+        public static void ConfigurarServico(IServiceCollection services)
+        {            
+            services.AddScoped<IOperacoesServico,OperacoesServico>();
+            services.AddScoped<ITransacaoServico,TransacaoServico>();
         }
     }
 }
