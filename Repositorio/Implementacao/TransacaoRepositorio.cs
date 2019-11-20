@@ -15,7 +15,7 @@ namespace Repositorio.Implementacao
     {
         private JsonSerializerSettings serializerSettings;
         private string pathControl = @"..\Repositorio\Banco\trans_control.json";
-        private int tipoTransacao = EnumTiposChaves.Transacao.getInt();
+        private int tipoChaveTransacao = EnumTiposChaves.Transacao.getInt();
         private IChaveRepositorio _chaveRepositorio;
         public TransacaoRepositorio(IChaveRepositorio chaveRepositorio)
         {
@@ -32,7 +32,7 @@ namespace Repositorio.Implementacao
             string json = File.ReadAllText(pathControl);
             var primeiroCadastro = String.IsNullOrEmpty(json);
 
-            ChaveDominio chave = _chaveRepositorio.ProximaChave(tipoTransacao);
+            ChaveDominio chave = _chaveRepositorio.ProximaChave(tipoChaveTransacao);
             List<TransacaoDominio> transacoes;
             TransacaoDominio transacao = new TransacaoDominio { Tid = chave.ProximaChave, Status = 0 };
 
@@ -49,7 +49,7 @@ namespace Repositorio.Implementacao
                 EscreverNovasTransacoes(transacoes);
             }
 
-            CriaArquivoProcessos(transacao.Path);
+            CriaArquivoOperacoes(transacao.Path);
 
             return transacao.Tid;
         }
@@ -58,6 +58,13 @@ namespace Repositorio.Implementacao
         {
             string json = File.ReadAllText(pathControl);
             return JsonConvert.DeserializeObject<List<TransacaoDominio>>(json);
+        }
+
+        public TransacaoDominio ObterTransacaoPorTid(int tid)
+        {
+            string json = File.ReadAllText(pathControl);
+            var retorno = JsonConvert.DeserializeObject<List<TransacaoDominio>>(json);
+            return retorno.Where(x => x.Tid == tid).FirstOrDefault();
         }
 
         public void CommitTransacao(int tid)
@@ -102,10 +109,9 @@ namespace Repositorio.Implementacao
             File.WriteAllText(pathControl, json);
         }
 
-        private void CriaArquivoProcessos (string path)
+        private void CriaArquivoOperacoes (string path)
         {
-            List<TransacaoDominio> transacoes = new List<TransacaoDominio>();
-            var json = JsonConvert.SerializeObject(transacoes, serializerSettings);
+            var json = JsonConvert.SerializeObject(null, serializerSettings);
             File.WriteAllText(path, json);
         }
     }        

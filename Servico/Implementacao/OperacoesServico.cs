@@ -9,31 +9,38 @@ namespace Servico.Implementacao
     public class OperacoesServico : IOperacoesServico
     {
         private readonly IOperacoesRepositorio _operacoesRepositorio;
-        public OperacoesServico(IOperacoesRepositorio operacoesRepositorio)
+        private readonly IChaveRepositorio _chaveRepositorio;
+        private readonly int tipoChaveAluno = EnumTiposChaves.Aluno.getInt();
+        public OperacoesServico(IOperacoesRepositorio operacoesRepositorio, IChaveRepositorio chaveRepositorio)
         {
             _operacoesRepositorio = operacoesRepositorio;
+            _chaveRepositorio = chaveRepositorio;
         }
 
-        public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros)
+        public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros, int tid)
         {
-            return _operacoesRepositorio.Listar(filtros);
+            return _operacoesRepositorio.Listar(filtros, tid);
         }
         
         public IEnumerable<RegistroDominio> ListarRegistros() => _operacoesRepositorio.ListarRegistros();
 
-        public void Inserir(IEnumerable<AlunoDominio> alunos)
+        public void Inserir(IEnumerable<AlunoDominio> alunos, int tid)
         {
-            _operacoesRepositorio.Inserir(alunos);
+            foreach(AlunoDominio aluno in alunos)
+            {
+                aluno.Chave = _chaveRepositorio.ProximaChave(tipoChaveAluno).ProximaChave;                
+            }
+            _operacoesRepositorio.Inserir(alunos, tid);
         }
 
-        public void Atualizar(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros)
+        public void Atualizar(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros, int tid)
         {
-            _operacoesRepositorio.Atualizar(aluno, filtros);
+            _operacoesRepositorio.Atualizar(aluno, filtros, tid);
         }
 
-        public void Deletar(IEnumerable<FiltroDominio> filtros)
+        public void Deletar(IEnumerable<FiltroDominio> filtros, int tid)
         {
-            _operacoesRepositorio.Deletar(filtros);
+            _operacoesRepositorio.Deletar(filtros, tid);
         }
     }
 }

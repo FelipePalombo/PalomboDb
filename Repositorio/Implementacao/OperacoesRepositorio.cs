@@ -14,16 +14,41 @@ namespace Repositorio.Implementacao
     public class OperacoesRepositorio : IOperacoesRepositorio
     {
         private JsonSerializerSettings serializerSettings;
-        private string path = @"..\Repositorio\Banco\alunos.json";
-        public OperacoesRepositorio()
+        private readonly ITransacaoRepositorio _transacaoRepositorio;
+        private string path;
+        public OperacoesRepositorio(ITransacaoRepositorio transacaoRepositorio)
         {
+            _transacaoRepositorio = transacaoRepositorio;
+
             serializerSettings = new JsonSerializerSettings 
             { 
                 Formatting = Formatting.Indented,
                 TypeNameHandling = TypeNameHandling.Auto 
             };
         }
-        public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros)
+
+        public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros, int tid)
+        {
+            string json = File.ReadAllText(path);
+            List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json); 
+            
+            if (filtros.Count() > 0)
+            {
+                List<AlunoDominio> alunosFiltrados = null;
+                foreach(FiltroDominio filtro in filtros)
+                {
+                    alunosFiltrados = alunos.Where(x => x.GetPropertyValue(filtro.Propriedade).Equals(filtro.Valor)).ToList();
+                }
+
+                return alunosFiltrados;
+            }
+            else
+            {
+                return alunos;
+            }
+        }
+
+        private IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros)
         {
             string json = File.ReadAllText(path);
             List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json); 
@@ -55,25 +80,32 @@ namespace Repositorio.Implementacao
             return registros;
         }
 
-        public void Inserir(IEnumerable<AlunoDominio> alunosNovos) 
+        public void Inserir(IEnumerable<AlunoDominio> alunosNovos, int tid) 
         {
+            var transacao = _transacaoRepositorio.ObterTransacaoPorTid(tid);
+            this.path = transacao.Path;
+
             string json = File.ReadAllText(path);
             var primeiroCadastro = String.IsNullOrEmpty(json);   
 
             if(primeiroCadastro)
             {
-                EscreverNovosAlunos(alunosNovos);                    
+                EscreverNovasOperacao(alunosNovos);                    
             }
             else
             {                 
                 List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json);        
-                alunos.Concat(alunosNovos);
+                List<AlunoDominio> alunosNovosLista = alunosNovos.ToList();
+                alunos.Concat(alunosNovosLista);
 
-                EscreverNovosAlunos(alunos);
+                if(alunos.Count() < 1)
+                    throw new FileLoadException("Arquivo lido incorretamente");
+
+                EscreverNovasOperacao(alunos);
             }
         }
 
-        public void Atualizar(AlunoDominio alunoAtualizacao, IEnumerable<FiltroDominio> filtros)
+        public void Atualizar(AlunoDominio alunoAtualizacao, IEnumerable<FiltroDominio> filtros, int tid)
         {
             var alunos = Listar(new List<FiltroDominio>());
             List<AlunoDominio> alunosFiltrados = new List<AlunoDominio>();
@@ -87,10 +119,10 @@ namespace Repositorio.Implementacao
                 alunosFiltrados.Add(aluno);
             }
 
-            EscreverNovosAlunos(alunosFiltrados);
+            EscreverNovasOperacao(alunosFiltrados);
         }
 
-        public void Deletar(IEnumerable<FiltroDominio> filtros)
+        public void Deletar(IEnumerable<FiltroDominio> filtros, int tid)
         {
             List<AlunoDominio> alunosFiltrados = new List<AlunoDominio>();
 
@@ -108,35 +140,13 @@ namespace Repositorio.Implementacao
                 }
             }            
 
-            EscreverNovosAlunos(alunosFiltrados);
+            EscreverNovasOperacao(alunosFiltrados);
         }
 
-        private void PrepararNovoAluno(JsonTextWriter writer, AlunoDominio aluno)
+        private void EscreverNovasOperacao(IEnumerable<AlunoDominio> alunos)
         {
-            writer.WriteStartObject();
-            writer.WritePropertyName("codigo");
-            writer.WriteValue(aluno.Codigo);
-            writer.WritePropertyName("nome");
-            writer.WriteValue(aluno.Nome);                
-            writer.WritePropertyName("nota");
-            writer.WriteValue(aluno.Nota);
-            writer.WriteEndObject();
-        }
-
-        private void EscreverNovosAlunos(IEnumerable<AlunoDominio> alunos)
-        {
-            using (StreamWriter file = File.CreateText(path))
-            using (JsonTextWriter writer = new JsonTextWriter(file))
-            {
-                writer.Formatting = Formatting.Indented;
-
-                writer.WriteStartArray();
-                foreach(AlunoDominio aluno in alunos)
-                {
-                    PrepararNovoAluno(writer, aluno);
-                }                                            
-                writer.WriteEndArray();   
-            }
+            var json = JsonConvert.SerializeObject(alunos, serializerSettings);
+            File.WriteAllText(path, json);
         }
 
         private bool IsFiltroCompativel(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros)

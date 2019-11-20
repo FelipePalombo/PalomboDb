@@ -6,10 +6,10 @@ namespace Servico.Interface
 {
     public interface IOperacoesServico
     {
-        IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros);
+        IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros, int tid);
         IEnumerable<RegistroDominio> ListarRegistros();
-        void Inserir(IEnumerable<AlunoDominio> alunos);
-        void Atualizar(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros);
-        void Deletar(IEnumerable<FiltroDominio> filtros);
+        void Inserir(IEnumerable<AlunoDominio> alunos, int tid);
+        void Atualizar(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros, int tid);
+        void Deletar(IEnumerable<FiltroDominio> filtros, int tid);
     }
 }

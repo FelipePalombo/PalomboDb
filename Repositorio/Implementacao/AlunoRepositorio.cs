@@ -11,9 +11,20 @@ using System.Linq;
 
 namespace Repositorio.Implementacao
 {
-    public class AlunoRepositorio : IOperacoesRepositorio
+    public class AlunoRepositorio : IAlunoRepositorio
     {
+        private JsonSerializerSettings serializerSettings;
         private string path = @"..\Repositorio\Banco\alunos.json";
+
+        public AlunoRepositorio()
+        {
+            serializerSettings = new JsonSerializerSettings 
+            { 
+                Formatting = Formatting.Indented,
+                TypeNameHandling = TypeNameHandling.Auto 
+            };
+        }
+
         public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros)
         {
             string json = File.ReadAllText(path);
@@ -33,17 +44,6 @@ namespace Repositorio.Implementacao
             {
                 return alunos;
             }
-        }
-
-        public IEnumerable<RegistroDominio> ListarRegistros()
-        {
-            var alunos = Listar(new List<FiltroDominio>());
-            List<RegistroDominio> registros = new List<RegistroDominio>(); 
-            foreach(AlunoDominio aluno in alunos)
-            {
-                registros.Add(new RegistroDominio { Codigo = aluno.Codigo, Bloqueado = 'N'});
-            }
-            return registros;
         }
 
         public void Inserir(IEnumerable<AlunoDominio> alunosNovos) 
@@ -102,32 +102,10 @@ namespace Repositorio.Implementacao
             EscreverNovosAlunos(alunosFiltrados);
         }
 
-        private void PrepararNovoAluno(JsonTextWriter writer, AlunoDominio aluno)
-        {
-            writer.WriteStartObject();
-            writer.WritePropertyName("codigo");
-            writer.WriteValue(aluno.Codigo);
-            writer.WritePropertyName("nome");
-            writer.WriteValue(aluno.Nome);                
-            writer.WritePropertyName("nota");
-            writer.WriteValue(aluno.Nota);
-            writer.WriteEndObject();
-        }
-
         private void EscreverNovosAlunos(IEnumerable<AlunoDominio> alunos)
         {
-            using (StreamWriter file = File.CreateText(path))
-            using (JsonTextWriter writer = new JsonTextWriter(file))
-            {
-                writer.Formatting = Formatting.Indented;
-
-                writer.WriteStartArray();
-                foreach(AlunoDominio aluno in alunos)
-                {
-                    PrepararNovoAluno(writer, aluno);
-                }                                            
-                writer.WriteEndArray();   
-            }
+            var json = JsonConvert.SerializeObject(alunos, serializerSettings);
+            File.WriteAllText(path, json);
         }
 
         private bool IsFiltroCompativel(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros)
