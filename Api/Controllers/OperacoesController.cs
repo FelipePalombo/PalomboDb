@@ -25,7 +25,7 @@ namespace Api.Controllers
         }
 
         // POST operacoes/listar
-        [HttpGet]
+        [HttpPost]
         public dynamic Listar([FromBody] TidFiltrosDto tidFiltrosDto)
         {
             IEnumerable<FiltroDto> filtros = tidFiltrosDto.Filtros;
