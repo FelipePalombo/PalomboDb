@@ -111,7 +111,7 @@ namespace Repositorio.Implementacao
 
         private void CriaArquivoOperacoes (string path)
         {
-            var json = JsonConvert.SerializeObject(null, serializerSettings);
+            var json = ""; //JsonConvert.SerializeObject("", serializerSettings);
             File.WriteAllText(path, json);
         }
     }        
