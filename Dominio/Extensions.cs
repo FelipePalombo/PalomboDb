@@ -6,4 +6,9 @@ public static class Extensions
     {
         return values.Contains(val);
     }
+
+    public static int getInt(this object chave)
+    {
+        return (int) chave;
+    }
 }
