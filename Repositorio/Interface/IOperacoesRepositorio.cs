@@ -6,14 +6,14 @@ namespace Repositorio.Interface
 {
     public interface IOperacoesRepositorio
     {
-        IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros, int tid);
+        IEnumerable<AlunoDominio> Listar(OperacaoDominio operacao, TransacaoDominio transacao);
 
         IEnumerable<RegistroDominio> ListarRegistros();
 
-        void Inserir(IEnumerable<AlunoDominio> alunosNovos, int tid);
+        void Inserir(OperacaoDominio operacao, string pathOp);
 
-        void Atualizar(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros, int tid);
+        void Atualizar(OperacaoDominio operacao, string pathOp);
 
-        void Deletar(IEnumerable<FiltroDominio> filtros, int tid);
+        void Deletar(OperacaoDominio operacao, string pathOp);
     }
 }

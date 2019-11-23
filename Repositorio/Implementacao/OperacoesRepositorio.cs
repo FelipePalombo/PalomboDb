@@ -16,6 +16,7 @@ namespace Repositorio.Implementacao
         private JsonSerializerSettings serializerSettings;
         private readonly ITransacaoRepositorio _transacaoRepositorio;
         private string path;
+        private string pathAlunos = @"..\Repositorio\Banco\alunos.json";
         public OperacoesRepositorio(ITransacaoRepositorio transacaoRepositorio)
         {
             _transacaoRepositorio = transacaoRepositorio;
@@ -27,11 +28,14 @@ namespace Repositorio.Implementacao
             };
         }
 
-        public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros, int tid)
+        public IEnumerable<AlunoDominio> Listar(OperacaoDominio operacao, TransacaoDominio transacao)
         {
-            string json = File.ReadAllText(path);
-            List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json); 
+            this.path = transacao.Path;
             
+            List<AlunoDominio> alunos = this.ListarTudo(operacao, transacao).ToList();
+
+            var filtros = operacao.Filtros;
+
             if (filtros.Count() > 0)
             {
                 List<AlunoDominio> alunosFiltrados = null;
@@ -48,30 +52,64 @@ namespace Repositorio.Implementacao
             }
         }
 
-        private IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros)
+        private IEnumerable<AlunoDominio> ListarTudo(OperacaoDominio operacao, TransacaoDominio transacao)
         {
-            string json = File.ReadAllText(path);
-            List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json); 
+            string jsonRepo = File.ReadAllText(pathAlunos);
+            var alunos = !String.IsNullOrWhiteSpace(jsonRepo) ? JsonConvert.DeserializeObject<List<AlunoDominio>>(jsonRepo) : new List<AlunoDominio>();
             
-            if (filtros.Count() > 0)
+            string json = File.ReadAllText(path);
+            if(!String.IsNullOrWhiteSpace(json))
             {
-                List<AlunoDominio> alunosFiltrados = null;
-                foreach(FiltroDominio filtro in filtros)
+                List<OperacaoDominio> operacoes = JsonConvert.DeserializeObject<List<OperacaoDominio>>(json);
+                foreach(OperacaoDominio operacaoAjustes in operacoes)
                 {
-                    alunosFiltrados = alunos.Where(x => x.GetPropertyValue(filtro.Propriedade).Equals(filtro.Valor)).ToList();
-                }
+                    if(operacaoAjustes.Tipo == EnumTiposOperacoes.Insert.getInt())
+                    {
+                        var alunosNovos = operacaoAjustes.Alunos;
+                        alunos = alunos.Concat(alunosNovos).ToList();                        
+                    }
+                    else if (operacaoAjustes.Tipo == EnumTiposOperacoes.Update.getInt())
+                    {                        
+                        foreach(AlunoDominio aluno in alunos)
+                        {
+                            bool atualizar = IsFiltroCompativel(aluno, operacaoAjustes.Filtros);
+                            if (atualizar)
+                            {
+                                aluno.AtualizarCampoNecessario(operacaoAjustes.Alunos.FirstOrDefault());
+                            }
+                        }
+                    }
+                    else if (operacaoAjustes.Tipo == EnumTiposOperacoes.Delete.getInt())
+                    {
+                        List<AlunoDominio> filtradosDelete = new List<AlunoDominio>();
+                        var filtrosAjustes = operacaoAjustes.Filtros;
 
-                return alunosFiltrados;
+                        if(filtrosAjustes.Count() > 0)
+                        {                        
+                            foreach(AlunoDominio aluno in alunos)
+                            {
+                                bool deletar = IsFiltroCompativel(aluno, filtrosAjustes);
+                                if (!deletar)
+                                {
+                                    filtradosDelete.Add(aluno);
+                                }                
+                            }
+                        }
+
+                        alunos = new List<AlunoDominio>();
+                        alunos = alunos.Concat(filtradosDelete).ToList();            
+                    }
+                }          
             }
-            else
-            {
-                return alunos;
-            }
+
+            return alunos;
         }
 
         public IEnumerable<RegistroDominio> ListarRegistros()
         {
-            var alunos = Listar(new List<FiltroDominio>());
+            string json = File.ReadAllText(@"..\Repositorio\Banco\alunos.json");
+            List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json);  
+
             List<RegistroDominio> registros = new List<RegistroDominio>(); 
             foreach(AlunoDominio aluno in alunos)
             {
@@ -80,72 +118,87 @@ namespace Repositorio.Implementacao
             return registros;
         }
 
-        public void Inserir(IEnumerable<AlunoDominio> alunosNovos, int tid) 
+        public void Inserir(OperacaoDominio operacao, string pathOp) 
         {
-            var transacao = _transacaoRepositorio.ObterTransacaoPorTid(tid);
-            this.path = transacao.Path;
+            this.path = pathOp;
 
             string json = File.ReadAllText(path);
-            var primeiroCadastro = String.IsNullOrEmpty(json);   
+            var primeiroCadastro = String.IsNullOrEmpty(json);  
+
+            var operacoes = new List<OperacaoDominio>(); 
 
             if(primeiroCadastro)
-            {
-                EscreverNovasOperacao(alunosNovos);                    
+            {                
+                operacoes.Add(operacao);
+                EscreverOperacoes(operacoes);                    
             }
             else
             {                 
-                List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json);        
-                List<AlunoDominio> alunosNovosLista = alunosNovos.ToList();
-                alunos.Concat(alunosNovosLista);
+                operacoes = JsonConvert.DeserializeObject<List<OperacaoDominio>>(json); 
+                operacoes.Add(operacao);
 
-                if(alunos.Count() < 1)
+                if(operacoes.Count() < 1)
                     throw new FileLoadException("Arquivo lido incorretamente");
 
-                EscreverNovasOperacao(alunos);
+                EscreverOperacoes(operacoes);
             }
         }
 
-        public void Atualizar(AlunoDominio alunoAtualizacao, IEnumerable<FiltroDominio> filtros, int tid)
+        public void Atualizar(OperacaoDominio operacao, string pathOp)
         {
-            var alunos = Listar(new List<FiltroDominio>());
-            List<AlunoDominio> alunosFiltrados = new List<AlunoDominio>();
-            foreach(AlunoDominio aluno in alunos)
-            {
-                bool atualizar = IsFiltroCompativel(aluno, filtros);
-                if (atualizar)
-                {
-                    aluno.AtualizarCampoNecessario(alunoAtualizacao);
-                }
-                alunosFiltrados.Add(aluno);
+            this.path = pathOp;
+
+            string json = File.ReadAllText(path);
+            var primeiroCadastro = String.IsNullOrEmpty(json);  
+
+            var operacoes = new List<OperacaoDominio>(); 
+
+            if(primeiroCadastro)
+            {                
+                operacoes.Add(operacao);
+                EscreverOperacoes(operacoes);                    
             }
+            else
+            {                 
+                operacoes = JsonConvert.DeserializeObject<List<OperacaoDominio>>(json); 
+                operacoes.Add(operacao);
 
-            EscreverNovasOperacao(alunosFiltrados);
+                if(operacoes.Count() < 1)
+                    throw new FileLoadException("Arquivo lido incorretamente");
+
+                EscreverOperacoes(operacoes);
+            }
         }
 
-        public void Deletar(IEnumerable<FiltroDominio> filtros, int tid)
+        public void Deletar(OperacaoDominio operacao, string pathOp)
         {
-            List<AlunoDominio> alunosFiltrados = new List<AlunoDominio>();
+            this.path = pathOp;
 
-            if(filtros.Count() > 0)
-            {
-                var alunos = Listar(new List<FiltroDominio>());
-            
-                foreach(AlunoDominio aluno in alunos)
-                {
-                    bool deletar = IsFiltroCompativel(aluno, filtros);
-                    if (!deletar)
-                    {
-                        alunosFiltrados.Add(aluno);
-                    }                
-                }
-            }            
+            string json = File.ReadAllText(path);
+            var primeiroCadastro = String.IsNullOrEmpty(json);  
 
-            EscreverNovasOperacao(alunosFiltrados);
+            var operacoes = new List<OperacaoDominio>(); 
+
+            if(primeiroCadastro)
+            {                
+                operacoes.Add(operacao);
+                EscreverOperacoes(operacoes);                    
+            }
+            else
+            {                 
+                operacoes = JsonConvert.DeserializeObject<List<OperacaoDominio>>(json); 
+                operacoes.Add(operacao);
+
+                if(operacoes.Count() < 1)
+                    throw new FileLoadException("Arquivo lido incorretamente");
+
+                EscreverOperacoes(operacoes);
+            }
         }
 
-        private void EscreverNovasOperacao(IEnumerable<AlunoDominio> alunos)
+        private void EscreverOperacoes(IEnumerable<OperacaoDominio> operacoes)
         {
-            var json = JsonConvert.SerializeObject(alunos, serializerSettings);
+            var json = JsonConvert.SerializeObject(operacoes, serializerSettings);
             File.WriteAllText(path, json);
         }
 
