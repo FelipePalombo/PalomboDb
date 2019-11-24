@@ -24,7 +24,7 @@ namespace Api.Controllers
             _mapper = mapper;
         }
 
-        // POST transacao/nova
+        // GET transacao/nova
         [HttpGet]
         public dynamic Nova()
         {
@@ -32,6 +32,36 @@ namespace Api.Controllers
             {
                 var tid = _servico.NovaTransacao();
                 return new {Resultado = "Sucesso", Corpo = new {Tid = tid}};
+            }
+            catch(Exception e)
+            {
+                return new {Resultado = "Erro", Erro = e.Message};
+            }
+        }
+
+        // GET transacao/commit
+        [HttpGet]
+        public dynamic Commit(int tid)
+        {
+            try
+            {
+                _servico.CommitTransacao(tid);
+                return new {Resultado = "Sucesso"};
+            }
+            catch(Exception e)
+            {
+                return new {Resultado = "Erro", Erro = e.Message};
+            }
+        }
+
+        // GET transacao/rollback
+        [HttpGet]
+        public dynamic Rollback(int tid)
+        {
+            try
+            {
+                _servico.RollbackTransacao(tid);
+                return new {Resultado = "Sucesso"};
             }
             catch(Exception e)
             {

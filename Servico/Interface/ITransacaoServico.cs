@@ -7,5 +7,8 @@ namespace Servico.Interface
     public interface ITransacaoServico
     {
         int NovaTransacao();
+        TransacaoDominio ObterTransacaoPorTid(int tid);
+        void CommitTransacao(int tid);
+        void RollbackTransacao(int tid);
     }
 }

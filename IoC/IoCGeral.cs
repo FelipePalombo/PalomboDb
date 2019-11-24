@@ -15,6 +15,7 @@ namespace IoC
             services.AddScoped<IChaveRepositorio, ChaveRepositorio>();
             services.AddScoped<ITransacaoRepositorio, TransacaoRepositorio>();
             services.AddScoped<IAlunoRepositorio, AlunoRepositorio>();
+            services.AddScoped<IBloqueioRepositorio, BloqueioRepositorio>();
         }
 
         public static void ConfigurarServico(IServiceCollection services)

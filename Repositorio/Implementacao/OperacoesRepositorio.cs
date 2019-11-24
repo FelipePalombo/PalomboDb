@@ -41,7 +41,11 @@ namespace Repositorio.Implementacao
                 List<AlunoDominio> alunosFiltrados = null;
                 foreach(FiltroDominio filtro in filtros)
                 {
-                    alunosFiltrados = alunos.Where(x => x.GetPropertyValue(filtro.Propriedade).Equals(filtro.Valor)).ToList();
+                    if(filtro.Propriedade != null)
+                    {
+                        if(filtro.Propriedade.Equals("Codigo") || filtro.Propriedade.Equals("Nome") || filtro.Propriedade.Equals("Chave") || filtro.Propriedade.Equals("Nota"))
+                            alunosFiltrados = alunos.Where(x => x.GetPropertyValue(filtro.Propriedade).Equals(filtro.Valor)).ToList();
+                    }                    
                 }
 
                 return alunosFiltrados;

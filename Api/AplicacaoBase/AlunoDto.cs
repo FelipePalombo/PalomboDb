@@ -2,7 +2,9 @@ namespace AplicacaoBase
 {
     public class AlunoDto
     {
-        public int? Chave { get => null; private set => value = null; }
+        private int? chave;
+
+        public int? Chave { get => chave; private set => chave = value; }
         public int? Codigo { get; set; }
         public string Nome { get; set; }
         public decimal? Nota { get; set; }

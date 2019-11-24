@@ -89,7 +89,7 @@ namespace Repositorio.Implementacao
         {
             var transacoes = ListarTransacoes();
             List<TransacaoDominio> transacoesAtualizadas = new List<TransacaoDominio>();
-            string path = transacoesAtualizadas.Where(x => x.Tid == tid).First().Path;
+            string path = transacoes.Where(x => x.Tid == tid).First().Path;
 
             foreach(TransacaoDominio transacao in transacoes)
             {
