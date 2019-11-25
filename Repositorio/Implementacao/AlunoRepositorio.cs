@@ -102,6 +102,12 @@ namespace Repositorio.Implementacao
             EscreverNovosAlunos(alunosFiltrados);
         }
 
+        public void ReescreverAlunos(IEnumerable<AlunoDominio> alunos)
+        {
+            var json = JsonConvert.SerializeObject(alunos, serializerSettings);
+            File.WriteAllText(path, json);
+        }
+
         private void EscreverNovosAlunos(IEnumerable<AlunoDominio> alunos)
         {
             var json = JsonConvert.SerializeObject(alunos, serializerSettings);

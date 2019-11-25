@@ -87,20 +87,31 @@ namespace Repositorio.Implementacao
 
         public void RollbackTransacao(int tid)
         {
+            EliminarTransacao(tid);
+        }
+
+        public void EliminarTransacao(int tid)
+        {
             var transacoes = ListarTransacoes();
             List<TransacaoDominio> transacoesAtualizadas = new List<TransacaoDominio>();
-            string path = transacoes.Where(x => x.Tid == tid).First().Path;
+            string path = null;
 
             foreach(TransacaoDominio transacao in transacoes)
             {
                 if(transacao.Tid != tid)
                 {
                     transacoesAtualizadas.Add(transacao);
+                }
+                else
+                {
+                    path = transacao.Path;
                 }               
             }
 
-            File.Delete(path);
-            EscreverNovasTransacoes(transacoesAtualizadas);
+            if (!String.IsNullOrWhiteSpace(path))
+                File.Delete(path);
+
+            EscreverNovasTransacoes(transacoesAtualizadas);                
         }             
 
         private void EscreverNovasTransacoes(IEnumerable<TransacaoDominio> transacoes)

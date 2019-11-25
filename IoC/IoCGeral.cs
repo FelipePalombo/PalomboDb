@@ -22,6 +22,7 @@ namespace IoC
         {            
             services.AddScoped<IOperacoesServico,OperacoesServico>();
             services.AddScoped<ITransacaoServico,TransacaoServico>();
+            services.AddScoped<ICheckpointServico,CheckpointServico>();
         }
     }
 }

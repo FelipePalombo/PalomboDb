@@ -11,5 +11,6 @@ namespace Repositorio.Interface
         void RollbackTransacao(int tid);
         IEnumerable<TransacaoDominio> ListarTransacoes();
         TransacaoDominio ObterTransacaoPorTid(int tid);
+        void EliminarTransacao(int tid);
     }
 }

@@ -13,5 +13,7 @@ namespace Repositorio.Interface
         void Atualizar(AlunoDominio aluno, IEnumerable<FiltroDominio> filtros);
 
         void Deletar(IEnumerable<FiltroDominio> filtros);
+
+        void ReescreverAlunos(IEnumerable<AlunoDominio> alunos);
     }
 }

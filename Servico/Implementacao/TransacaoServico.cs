@@ -3,6 +3,7 @@ using Servico.Interface;
 using System.Collections.Generic;
 using Dominio;
 using Repositorio.Interface;
+using System.Linq;
 
 namespace Servico.Implementacao
 {
@@ -61,6 +62,16 @@ namespace Servico.Implementacao
             {
                 throw new System.Exception(problemaTransacao);
             } 
+        }
+
+        public void EliminarTransacao(int tid) => _transacaoRepositorio.EliminarTransacao(tid);
+
+        public IEnumerable<TransacaoDominio> ListarTransacoes() => _transacaoRepositorio.ListarTransacoes();
+
+        public IEnumerable<TransacaoDominio> ListarTransacoesEncerradas()
+        {
+            var transacoes = _transacaoRepositorio.ListarTransacoes();
+            return transacoes.Where(t => t.Status == tipoCommit);
         }
 
         private bool VerificarTransacao(TransacaoDominio transacao)

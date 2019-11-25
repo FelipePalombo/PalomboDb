@@ -15,6 +15,7 @@ using AutoMapper;
 using Dominio;
 using AplicacaoBase;
 using Microsoft.OpenApi.Models;
+using Background;
 
 namespace Api
 {
@@ -49,6 +50,8 @@ namespace Api
             IoCGeral.ConfigurarServico(services);
 
             IoCGeral.ConfigurarRepositorio(services);
+
+            services.AddHostedService<Checkpoint>();
 
             var mapeamento = RegistrosMapeados();
             services.AddScoped<IMapper>(x => new Mapper(mapeamento));

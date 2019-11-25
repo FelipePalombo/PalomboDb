@@ -32,7 +32,7 @@ namespace Repositorio.Implementacao
         {
             this.path = transacao.Path;
             
-            List<AlunoDominio> alunos = this.ListarTudo(operacao, transacao).ToList();
+            List<AlunoDominio> alunos = this.ListarTudo(transacao).ToList();
 
             var filtros = operacao.Filtros;
 
@@ -56,12 +56,12 @@ namespace Repositorio.Implementacao
             }
         }
 
-        private IEnumerable<AlunoDominio> ListarTudo(OperacaoDominio operacao, TransacaoDominio transacao)
+        public IEnumerable<AlunoDominio> ListarTudo(TransacaoDominio transacao)
         {
             string jsonRepo = File.ReadAllText(pathAlunos);
             var alunos = !String.IsNullOrWhiteSpace(jsonRepo) ? JsonConvert.DeserializeObject<List<AlunoDominio>>(jsonRepo) : new List<AlunoDominio>();
             
-            string json = File.ReadAllText(path);
+            string json = File.ReadAllText(transacao.Path);
             if(!String.IsNullOrWhiteSpace(json))
             {
                 List<OperacaoDominio> operacoes = JsonConvert.DeserializeObject<List<OperacaoDominio>>(json);

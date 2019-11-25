@@ -10,5 +10,8 @@ namespace Servico.Interface
         TransacaoDominio ObterTransacaoPorTid(int tid);
         void CommitTransacao(int tid);
         void RollbackTransacao(int tid);
+        IEnumerable<TransacaoDominio> ListarTransacoes();
+        IEnumerable<TransacaoDominio> ListarTransacoesEncerradas();
+        void EliminarTransacao(int tid);
     }
 }
