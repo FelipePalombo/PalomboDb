@@ -60,6 +60,14 @@ namespace Api
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PalomboDb", Version = "v1" });
             });
+
+            services.AddCors(options => {
+                options.AddPolicy("React",
+                    builder => builder.WithOrigins("http://localhost:3000")
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader()
+                                    .AllowAnyOrigin());
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,6 +89,8 @@ namespace Api
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "PalomboDb V1");
             });
+
+            app.UseCors("PermissionamentoReact");
 
             app.UseHttpsRedirection();
             app.UseMvc();
