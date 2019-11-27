@@ -63,9 +63,10 @@ namespace Servico.Implementacao
             return alunos.OrderBy(o => o.Codigo);
         }
         
-        public IEnumerable<RegistroDominio> ListarRegistros(int tid)
+        public IEnumerable<RegistroDominio> ListarRegistros(int? tid)
         {
-            TransacaoDominio transacao = _transacaoServico.ObterTransacaoPorTid(tid);
+            TransacaoDominio transacao = null;
+            transacao = tid == null ? transacao : _transacaoServico.ObterTransacaoPorTid(Convert.ToInt32(tid));
             var registros = _operacoesRepositorio.ListarRegistros(transacao);
             
             foreach(RegistroDominio registro in registros)

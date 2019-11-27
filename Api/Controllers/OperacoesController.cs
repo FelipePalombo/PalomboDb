@@ -43,7 +43,7 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public dynamic ListarRegistros(int tid)
+        public dynamic ListarRegistros(int? tid)
         {
             try
             {
