@@ -117,7 +117,7 @@ namespace Repositorio.Implementacao
             List<RegistroDominio> registros = new List<RegistroDominio>(); 
             foreach(AlunoDominio aluno in alunos)
             {
-                registros.Add(new RegistroDominio { Codigo = aluno.Codigo, Bloqueado = 'N'});
+                registros.Add(new RegistroDominio {Chave = Convert.ToInt32(aluno.Chave), Codigo = aluno.Codigo, Bloqueado = 'N'});
             }
             return registros;
         }

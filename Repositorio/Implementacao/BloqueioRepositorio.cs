@@ -78,26 +78,45 @@ namespace Repositorio.Implementacao
             return bloqueado;
         }
 
+        public IEnumerable<BloqueioDominio> ObterBloqueios(int chaveAluno)
+        {
+            string json = File.ReadAllText(path);
+            List<BloqueioDominio> bloqueios = JsonConvert.DeserializeObject<List<BloqueioDominio>>(json);
+            List<BloqueioDominio> bloqueiosAluno = new List<BloqueioDominio>();
+
+            if(bloqueios.Count() > 0)
+            {
+                foreach(BloqueioDominio bloqueio in bloqueios)
+                {
+                    if(bloqueio.ChaveAluno == chaveAluno)
+                    {
+                        bloqueiosAluno.Add(bloqueio);
+                    }
+                }
+            }
+
+            return bloqueiosAluno;
+        }
+
         public void InserirBloqueio(BloqueioDominio bloqueio)
         {
             string json = File.ReadAllText(path);
             var primeiroCadastro = String.IsNullOrEmpty(json);  
 
             var bloqueios = new List<BloqueioDominio>(); 
+            bloqueios = JsonConvert.DeserializeObject<List<BloqueioDominio>>(json);
 
-            if(primeiroCadastro)
+            if(primeiroCadastro || bloqueios.Count() < 1)
             {                
                 bloqueios.Add(bloqueio);
                 EscreverBloqueios(bloqueios);                    
             }
             else
             {                 
-                bloqueios = JsonConvert.DeserializeObject<List<BloqueioDominio>>(json);
-
                 if(bloqueios.Count() < 1)
                     throw new FileLoadException("Arquivo lido incorretamente");
 
-                var bloqueioExiste = bloqueios.Exists(b => b.ChaveAluno == bloqueio.ChaveAluno && b.Tipo == bloqueio.Tipo);
+                var bloqueioExiste = bloqueios.Exists(b => b.ChaveAluno == bloqueio.ChaveAluno && b.Tipo == bloqueio.Tipo && b.Tid == bloqueio.Tid);
 
                 if(!bloqueioExiste) 
                     bloqueios.Add(bloqueio);               

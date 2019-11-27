@@ -63,7 +63,29 @@ namespace Servico.Implementacao
             return alunos.OrderBy(o => o.Codigo);
         }
         
-        public IEnumerable<RegistroDominio> ListarRegistros() => _operacoesRepositorio.ListarRegistros();
+        public IEnumerable<RegistroDominio> ListarRegistros()
+        {
+            var registros = _operacoesRepositorio.ListarRegistros();
+            foreach(RegistroDominio registro in registros)
+            {
+                var bloqueios = _bloqueioRepositorio.ObterBloqueios(registro.Chave);
+                if(bloqueios.Count() > 0)
+                {
+                    var existeBloqueioExclusivo = bloqueios.Any(b => b.Tipo == tipoBloqueioExclusivo);
+                    if(existeBloqueioExclusivo)
+                    {
+                        registro.Bloqueado = 'S';
+                        registro.TipoBloqueio = EnumTiposBloqueios.Exclusivo.ObterTipoPorEnum();
+                    }
+                    else
+                    {
+                        registro.Bloqueado = 'S';
+                        registro.TipoBloqueio = EnumTiposBloqueios.Compartilhado.ObterTipoPorEnum();
+                    }
+                }
+            }
+            return registros;
+        } 
 
         public void Inserir(IEnumerable<AlunoDominio> alunos, int tid)
         {

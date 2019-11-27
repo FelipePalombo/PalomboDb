@@ -31,11 +31,11 @@ namespace Api.Controllers
             try
             {
                 var tid = _servico.NovaTransacao();
-                return new {Resultado = "Sucesso", Corpo = new {Tid = tid}};
+                return new {Resultado = "Sucesso", Corpo = new {Tid = tid}, Erro = ""};
             }
             catch(Exception e)
             {
-                return new {Resultado = "Erro", Erro = e.Message};
+                return new {Resultado = "Erro", Corpo = "", Erro = e.Message};
             }
         }
 
@@ -46,11 +46,11 @@ namespace Api.Controllers
             try
             {
                 _servico.CommitTransacao(tid);
-                return new {Resultado = "Sucesso"};
+                return new {Resultado = "Sucesso", Corpo = "", Erro = ""};
             }
             catch(Exception e)
             {
-                return new {Resultado = "Erro", Erro = e.Message};
+                return new {Resultado = "Erro", Corpo = "", Erro = e.Message};
             }
         }
 
@@ -61,11 +61,11 @@ namespace Api.Controllers
             try
             {
                 _servico.RollbackTransacao(tid);
-                return new {Resultado = "Sucesso"};
+                return new {Resultado = "Sucesso", Corpo = "", Erro = ""};
             }
             catch(Exception e)
             {
-                return new {Resultado = "Erro", Erro = e.Message};
+                return new {Resultado = "Erro", Corpo = "", Erro = e.Message};
             }
         }
     }

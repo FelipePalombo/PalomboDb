@@ -10,6 +10,8 @@ namespace Repositorio.Interface
 
         bool IsBloqueado(AlunoDominio aluno, int tipoBloqueio, int tid);
 
+        IEnumerable<BloqueioDominio> ObterBloqueios(int chaveAluno);
+
         void InserirBloqueio(BloqueioDominio bloqueio);
 
         void EncerrarBloqueio(int tid);

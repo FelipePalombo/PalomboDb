@@ -34,11 +34,11 @@ namespace Api.Controllers
             {
                 var pFiltros = _mapper.Map<IEnumerable<FiltroDominio>>(filtros);
                 var retorno = _mapper.Map<IEnumerable<AlunoDto>>(_servico.Listar(pFiltros, tid));
-                return new {Resultado = "Sucesso", Corpo = retorno};
+                return new {Resultado = "Sucesso", Corpo = retorno, Erro = ""};
             }
             catch(Exception e)
             {
-                return new {Resultado = "Erro", Erro = e.Message};
+                return new {Resultado = "Erro", Corpo = "", Erro = e.Message};
             }            
         }
 
@@ -48,11 +48,11 @@ namespace Api.Controllers
             try
             {
                 var retorno = _mapper.Map<IEnumerable<RegistroDto>>(_servico.ListarRegistros());
-                return new {Resultado = "Sucesso", Corpo = retorno};
+                return new {Resultado = "Sucesso", Corpo = retorno, Erro = ""};
             }
             catch(Exception e)
             {
-                return new {Resultado = "Erro", Erro = e.Message};
+                return new {Resultado = "Erro", Corpo = "", Erro = e.Message};
             }            
         }
 
@@ -67,11 +67,11 @@ namespace Api.Controllers
                 var pAlunos = _mapper.Map<IEnumerable<AlunoDominio>>(alunos);
                 _servico.Inserir(pAlunos, tid);
                 
-                return new {Resultado = "Sucesso"};
+                return new {Resultado = "Sucesso", Corpo = "", Erro = ""};
             }
             catch(Exception e)
             {
-                return new {Resultado = "Erro", Erro = e.Message};
+                return new {Resultado = "Erro", Corpo = "", Erro = e.Message};
             }
             
         }
@@ -89,11 +89,11 @@ namespace Api.Controllers
                 var pFiltros = _mapper.Map<IEnumerable<FiltroDominio>>(filtros);
                 _servico.Atualizar(pAluno, pFiltros, tid);
                 
-                return new {Resultado = "Sucesso"};
+                return new {Resultado = "Sucesso", Corpo = "", Erro = ""};
             }
             catch(Exception e)
             {
-                return new {Resultado = "Erro", Erro = e.Message};
+                return new {Resultado = "Erro", Corpo = "", Erro = e.Message};
             }            
         }
 
@@ -107,11 +107,11 @@ namespace Api.Controllers
             {
                 var pFiltros = _mapper.Map<IEnumerable<FiltroDominio>>(filtros);
                 _servico.Deletar(pFiltros, tid);
-                return new {Resultado = "Sucesso"};
+                return new {Resultado = "Sucesso", Corpo = "", Erro = ""};
             }
             catch(Exception e)
             {
-                return new {Resultado = "Erro", Erro = e.Message};
+                return new {Resultado = "Erro", Corpo = "", Erro = e.Message};
             }            
         }
     }
