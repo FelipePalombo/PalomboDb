@@ -43,11 +43,11 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        public dynamic ListarRegistros()
+        public dynamic ListarRegistros(int tid)
         {
             try
             {
-                var retorno = _mapper.Map<IEnumerable<RegistroDto>>(_servico.ListarRegistros());
+                var retorno = _mapper.Map<IEnumerable<RegistroDto>>(_servico.ListarRegistros(tid));
                 return new {Resultado = "Sucesso", Corpo = retorno, Erro = ""};
             }
             catch(Exception e)

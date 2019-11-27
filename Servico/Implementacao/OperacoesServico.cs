@@ -63,9 +63,11 @@ namespace Servico.Implementacao
             return alunos.OrderBy(o => o.Codigo);
         }
         
-        public IEnumerable<RegistroDominio> ListarRegistros()
+        public IEnumerable<RegistroDominio> ListarRegistros(int tid)
         {
-            var registros = _operacoesRepositorio.ListarRegistros();
+            TransacaoDominio transacao = _transacaoServico.ObterTransacaoPorTid(tid);
+            var registros = _operacoesRepositorio.ListarRegistros(transacao);
+            
             foreach(RegistroDominio registro in registros)
             {
                 var bloqueios = _bloqueioRepositorio.ObterBloqueios(registro.Chave);

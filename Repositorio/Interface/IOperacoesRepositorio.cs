@@ -8,7 +8,7 @@ namespace Repositorio.Interface
     {
         IEnumerable<AlunoDominio> Listar(OperacaoDominio operacao, TransacaoDominio transacao);
         IEnumerable<AlunoDominio> ListarTudo(TransacaoDominio transacao);
-        IEnumerable<RegistroDominio> ListarRegistros();
+        IEnumerable<RegistroDominio> ListarRegistros(TransacaoDominio transacao);
 
         void Inserir(OperacaoDominio operacao, string pathOp);
 

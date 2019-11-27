@@ -109,10 +109,9 @@ namespace Repositorio.Implementacao
             return alunos;
         }
 
-        public IEnumerable<RegistroDominio> ListarRegistros()
-        {
-            string json = File.ReadAllText(@"..\Repositorio\Banco\alunos.json");
-            List<AlunoDominio> alunos = JsonConvert.DeserializeObject<List<AlunoDominio>>(json);  
+        public IEnumerable<RegistroDominio> ListarRegistros(TransacaoDominio transacao)
+        {            
+            List<AlunoDominio> alunos = ListarTudo(transacao).ToList();
 
             List<RegistroDominio> registros = new List<RegistroDominio>(); 
             foreach(AlunoDominio aluno in alunos)
