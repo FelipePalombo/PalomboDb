@@ -57,9 +57,13 @@ namespace Repositorio.Implementacao
 
         public bool IsBloqueado(AlunoDominio aluno, int tipoBloqueio, int tid)
         {
+            bool bloqueado = false;
+            
             string json = File.ReadAllText(path);
             List<BloqueioDominio> bloqueios = JsonConvert.DeserializeObject<List<BloqueioDominio>>(json);
-            bool bloqueado = false;
+            
+            if(bloqueios == null)
+                return false;
 
             if(bloqueios.Count() > 0)
             {
@@ -84,6 +88,9 @@ namespace Repositorio.Implementacao
             List<BloqueioDominio> bloqueios = JsonConvert.DeserializeObject<List<BloqueioDominio>>(json);
             List<BloqueioDominio> bloqueiosAluno = new List<BloqueioDominio>();
 
+            if(bloqueios == null)
+                return new List<BloqueioDominio>();
+
             if(bloqueios.Count() > 0)
             {
                 foreach(BloqueioDominio bloqueio in bloqueios)
@@ -103,8 +110,8 @@ namespace Repositorio.Implementacao
             string json = File.ReadAllText(path);
             var primeiroCadastro = String.IsNullOrEmpty(json);  
 
-            var bloqueios = new List<BloqueioDominio>(); 
-            bloqueios = JsonConvert.DeserializeObject<List<BloqueioDominio>>(json);
+            var bloqueios = JsonConvert.DeserializeObject<List<BloqueioDominio>>(json);
+            bloqueios = bloqueios == null ? new List<BloqueioDominio>() : bloqueios;
 
             if(primeiroCadastro || bloqueios.Count() < 1)
             {                
@@ -131,7 +138,7 @@ namespace Repositorio.Implementacao
             var bloqueios = JsonConvert.DeserializeObject<List<BloqueioDominio>>(json);
             var bloqueiosFiltrados = new List<BloqueioDominio>();
 
-            if(bloqueios.Count() > 0)
+            if(bloqueios != null && bloqueios.Count() > 0)
             {                        
                 foreach(BloqueioDominio bloqueio in bloqueios)
                 {

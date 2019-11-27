@@ -57,7 +57,8 @@ namespace Repositorio.Implementacao
         public IEnumerable<TransacaoDominio> ListarTransacoes()
         {
             string json = File.ReadAllText(pathControl);
-            return JsonConvert.DeserializeObject<List<TransacaoDominio>>(json);
+            var transacoes = JsonConvert.DeserializeObject<List<TransacaoDominio>>(json);
+            return transacoes == null ? new List<TransacaoDominio>() : transacoes;
         }
 
         public TransacaoDominio ObterTransacaoPorTid(int tid)
