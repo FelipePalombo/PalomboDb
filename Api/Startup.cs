@@ -32,6 +32,8 @@ namespace Api
                 cfg.CreateMap<AlunoDto, AlunoDominio>().ReverseMap();
                 cfg.CreateMap<FiltroDto, FiltroDominio>().ReverseMap();
                 cfg.CreateMap<RegistroDto, RegistroDominio>().ReverseMap();
+                cfg.CreateMap<TransacaoDto, TransacaoDominio>().ReverseMap();
+                cfg.CreateMap<UndoRedoDto, UndoRedoDominio>().ReverseMap();
             });
 
             config.CompileMappings();

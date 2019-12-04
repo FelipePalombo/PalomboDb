@@ -6,6 +6,7 @@ namespace Servico.Interface
 {
     public interface ICheckpointServico
     {
-        void Check();
+        void Check(bool start);
+        void SetUndoRedo();
     }
 }

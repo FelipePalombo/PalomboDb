@@ -12,6 +12,7 @@ namespace Servico.Implementacao
     {
         private readonly IOperacoesRepositorio _operacoesRepositorio;
         private readonly IChaveRepositorio _chaveRepositorio;
+        private readonly LogsServico _logsServico;
         private readonly ITransacaoServico _transacaoServico;
         private readonly IBloqueioRepositorio _bloqueioRepositorio;
         private readonly int tipoChaveAluno = EnumTiposChaves.Aluno.getInt();
@@ -24,6 +25,7 @@ namespace Servico.Implementacao
             _chaveRepositorio = chaveRepositorio;
             _transacaoServico = transacaoServico;
             _bloqueioRepositorio = bloqueioRepositorio;
+            _logsServico = new LogsServico();
         }
 
         public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros, int tid)
@@ -36,6 +38,14 @@ namespace Servico.Implementacao
                 Alunos = new List<AlunoDominio>(),
                 Filtros = filtros
             };
+
+            LogDominio log = new LogDominio
+            {
+                Tid = tid,
+                Acao = "Listar",
+                Detalhes = operacao
+            };    
+            _logsServico.AdicionarLog(log);
 
             var transacao = _transacaoServico.ObterTransacaoPorTid(tid);
 
@@ -108,6 +118,14 @@ namespace Servico.Implementacao
                 Filtros = new List<FiltroDominio>()
             };           
 
+            LogDominio log = new LogDominio
+            {
+                Tid = tid,
+                Acao = "Inserir",
+                Detalhes = operacao
+            };    
+            _logsServico.AdicionarLog(log);
+
             _operacoesRepositorio.Inserir(operacao, transacao.Path);
         }
 
@@ -148,6 +166,14 @@ namespace Servico.Implementacao
                 Filtros = filtros
             };
 
+            LogDominio log = new LogDominio
+            {
+                Tid = tid,
+                Acao = "Atualizar",
+                Detalhes = operacao
+            };    
+            _logsServico.AdicionarLog(log);
+
             _operacoesRepositorio.Atualizar(operacao, transacao.Path);
         }
 
@@ -161,6 +187,14 @@ namespace Servico.Implementacao
                 Alunos = new List<AlunoDominio>(),
                 Filtros = filtros
             };
+
+            LogDominio log = new LogDominio
+            {
+                Tid = tid,
+                Acao = "Deletar",
+                Detalhes = operacao
+            };    
+            _logsServico.AdicionarLog(log);
 
             var transacao = _transacaoServico.ObterTransacaoPorTid(tid);
 

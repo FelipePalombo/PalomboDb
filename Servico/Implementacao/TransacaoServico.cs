@@ -64,7 +64,16 @@ namespace Servico.Implementacao
             } 
         }
 
-        public void EliminarTransacao(int tid) => _transacaoRepositorio.EliminarTransacao(tid);
+        public UndoRedoDominio ListarUndoRedo()
+        {
+            return _transacaoRepositorio.ListarUndoRedo();
+        }
+
+        public void EliminarTransacao(int tid)
+        {
+            _bloqueioRepositorio.EncerrarBloqueio(tid);
+            _transacaoRepositorio.EliminarTransacao(tid);
+        } 
 
         public IEnumerable<TransacaoDominio> ListarTransacoes() => _transacaoRepositorio.ListarTransacoes();
 

@@ -115,6 +115,14 @@ namespace Repositorio.Implementacao
             EscreverNovasTransacoes(transacoesAtualizadas);                
         }             
 
+        public UndoRedoDominio ListarUndoRedo()
+        {
+            string json = File.ReadAllText(@"..\Repositorio\Banco\undoredo.json");
+            var undoRedo = JsonConvert.DeserializeObject<UndoRedoDominio>(json);
+
+            return undoRedo == null ? new UndoRedoDominio() : undoRedo;
+        }
+
         private void EscreverNovasTransacoes(IEnumerable<TransacaoDominio> transacoes)
         {
             var json = JsonConvert.SerializeObject(transacoes, serializerSettings);

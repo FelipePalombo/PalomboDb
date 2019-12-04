@@ -25,9 +25,19 @@ namespace Background
                 System.Threading.Thread.Sleep(30000);
                 while (!stoppingToken.IsCancellationRequested)
                 {
-                    _checkpointServico.Check();
+                    _checkpointServico.Check(false);
                     System.Threading.Thread.Sleep(30000);
                 }
+            }
+        }
+
+        public override async Task StartAsync(CancellationToken stoppingToken)
+        {
+            using (var scope = _scopeFactory.CreateScope())
+            {
+                var _checkpointServico = scope.ServiceProvider.GetRequiredService<ICheckpointServico>();
+                _checkpointServico.SetUndoRedo();
+                _checkpointServico.Check(true);
             }
         }
     }

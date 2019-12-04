@@ -13,5 +13,6 @@ namespace Servico.Interface
         IEnumerable<TransacaoDominio> ListarTransacoes();
         IEnumerable<TransacaoDominio> ListarTransacoesEncerradas();
         void EliminarTransacao(int tid);
+        UndoRedoDominio ListarUndoRedo();
     }
 }

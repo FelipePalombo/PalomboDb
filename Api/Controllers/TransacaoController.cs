@@ -68,5 +68,20 @@ namespace Api.Controllers
                 return new {Resultado = "Erro", Corpo = "", Erro = e.Message};
             }
         }
+
+        // GET transacao/nova
+        [HttpGet]
+        public dynamic ListarUndoRedo()
+        {
+            try
+            {
+                var undoRedo = _mapper.Map<UndoRedoDto>(_servico.ListarUndoRedo());
+                return new {Resultado = "Sucesso", Corpo = undoRedo, Erro = ""};
+            }
+            catch(Exception e)
+            {
+                return new {Resultado = "Erro", Corpo = "", Erro = e.Message};
+            }
+        }
     }
 }

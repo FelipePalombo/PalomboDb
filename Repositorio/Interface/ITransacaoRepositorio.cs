@@ -12,5 +12,6 @@ namespace Repositorio.Interface
         IEnumerable<TransacaoDominio> ListarTransacoes();
         TransacaoDominio ObterTransacaoPorTid(int tid);
         void EliminarTransacao(int tid);
+        UndoRedoDominio ListarUndoRedo();
     }
 }
