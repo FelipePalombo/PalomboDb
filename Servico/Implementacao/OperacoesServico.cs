@@ -12,7 +12,6 @@ namespace Servico.Implementacao
     {
         private readonly IOperacoesRepositorio _operacoesRepositorio;
         private readonly IChaveRepositorio _chaveRepositorio;
-        private readonly LogsServico _logsServico;
         private readonly ITransacaoServico _transacaoServico;
         private readonly IBloqueioRepositorio _bloqueioRepositorio;
         private readonly int tipoChaveAluno = EnumTiposChaves.Aluno.getInt();
@@ -25,7 +24,6 @@ namespace Servico.Implementacao
             _chaveRepositorio = chaveRepositorio;
             _transacaoServico = transacaoServico;
             _bloqueioRepositorio = bloqueioRepositorio;
-            _logsServico = new LogsServico();
         }
 
         public IEnumerable<AlunoDominio> Listar(IEnumerable<FiltroDominio> filtros, int tid)
@@ -45,7 +43,7 @@ namespace Servico.Implementacao
                 Acao = "Listar",
                 Detalhes = operacao
             };    
-            _logsServico.AdicionarLog(log);
+            LogsServico.AdicionarLog(log);
 
             var transacao = _transacaoServico.ObterTransacaoPorTid(tid);
 
@@ -124,7 +122,7 @@ namespace Servico.Implementacao
                 Acao = "Inserir",
                 Detalhes = operacao
             };    
-            _logsServico.AdicionarLog(log);
+            LogsServico.AdicionarLog(log);
 
             _operacoesRepositorio.Inserir(operacao, transacao.Path);
         }
@@ -172,7 +170,7 @@ namespace Servico.Implementacao
                 Acao = "Atualizar",
                 Detalhes = operacao
             };    
-            _logsServico.AdicionarLog(log);
+            LogsServico.AdicionarLog(log);
 
             _operacoesRepositorio.Atualizar(operacao, transacao.Path);
         }
@@ -194,7 +192,7 @@ namespace Servico.Implementacao
                 Acao = "Deletar",
                 Detalhes = operacao
             };    
-            _logsServico.AdicionarLog(log);
+            LogsServico.AdicionarLog(log);
 
             var transacao = _transacaoServico.ObterTransacaoPorTid(tid);
 

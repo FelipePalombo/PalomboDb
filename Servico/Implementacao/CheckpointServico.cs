@@ -17,7 +17,6 @@ namespace Servico.Implementacao
         private readonly ITransacaoServico _transacaoServico;
         private readonly IBloqueioRepositorio _bloqueioRepositorio;
         private readonly IAlunoRepositorio _alunoRepositorio;
-        private readonly LogsServico _logsServico;
         private JsonSerializerSettings serializerSettings;
 
         public CheckpointServico(IOperacoesRepositorio operacoesRepositorio, IChaveRepositorio chaveRepositorio, ITransacaoServico transacaoServico, IBloqueioRepositorio bloqueioRepositorio, IAlunoRepositorio alunoRepositorio)
@@ -26,8 +25,7 @@ namespace Servico.Implementacao
             _chaveRepositorio = chaveRepositorio;
             _transacaoServico = transacaoServico;
             _bloqueioRepositorio = bloqueioRepositorio;
-            _alunoRepositorio = alunoRepositorio;
-            _logsServico = new LogsServico();
+            _alunoRepositorio = alunoRepositorio;            
 
             serializerSettings = new JsonSerializerSettings 
             { 
@@ -63,7 +61,7 @@ namespace Servico.Implementacao
                 Acao = "Checkpoint",
                 Detalhes = new {TransacoesArmazenadas = checkpointed}
             };
-            _logsServico.AdicionarLog(log);
+            LogsServico.AdicionarLog(log);
         }
 
         public void SetUndoRedo()

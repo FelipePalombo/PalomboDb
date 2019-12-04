@@ -10,21 +10,19 @@ using System.IO;
 
 namespace Servico.Implementacao
 {
-    public class LogsServico
+    public static class LogsServico
     {
-        private JsonSerializerSettings serializerSettings;
-        private string path = @"..\Repositorio\Banco\logs.json";
-        public LogsServico()
+        public static void AdicionarLog(LogDominio log)
         {
+            string path = @"..\Repositorio\Banco\logs.json";
+
+            JsonSerializerSettings serializerSettings;
             serializerSettings = new JsonSerializerSettings 
             { 
                 Formatting = Formatting.Indented,
                 TypeNameHandling = TypeNameHandling.Auto 
             };
-        }
 
-        public void AdicionarLog(LogDominio log)
-        {
             string json = File.ReadAllText(path);
             var list = JsonConvert.DeserializeObject<List<LogDominio>>(json) ?? new List<LogDominio>();
             list.Add(log);

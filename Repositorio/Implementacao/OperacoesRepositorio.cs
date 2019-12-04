@@ -112,7 +112,8 @@ namespace Repositorio.Implementacao
         public IEnumerable<RegistroDominio> ListarRegistros(TransacaoDominio transacao)
         {
             string json = File.ReadAllText(@"..\Repositorio\Banco\alunos.json");
-            List<AlunoDominio> alunos = transacao == null ? JsonConvert.DeserializeObject<List<AlunoDominio>>(json) : ListarTudo(transacao).ToList();  
+            List<AlunoDominio> alunosRepo = JsonConvert.DeserializeObject<List<AlunoDominio>>(json) ?? new List<AlunoDominio>();
+            List<AlunoDominio> alunos = transacao == null ? alunosRepo : ListarTudo(transacao).ToList();  
 
             List<RegistroDominio> registros = new List<RegistroDominio>(); 
             foreach(AlunoDominio aluno in alunos)
